@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package hu.perit.redisstudy.businesslogic.bookstore;
+package hu.perit.redisstudy.service.bookservice;
 
-import hu.perit.redisstudy.businesslogic.api.BookstoreService;
 import hu.perit.redisstudy.db.postgres.repo.AuthorRepo;
 import hu.perit.redisstudy.db.postgres.repo.BookRepo;
 import hu.perit.redisstudy.db.postgres.table.AuthorEntity;
 import hu.perit.redisstudy.db.postgres.table.BookEntity;
 import hu.perit.redisstudy.mapper.AuthorMapper;
-import hu.perit.redisstudy.mapper.AuthorWithBooksMapper;
 import hu.perit.redisstudy.mapper.BookMapper;
-import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
 import hu.perit.redisstudy.rest.model.BookDTO;
 import hu.perit.redisstudy.rest.model.BookParams;
+import hu.perit.redisstudy.service.api.BookService;
 import hu.perit.spvitamin.core.typehelpers.LongUtils;
 import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +38,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class BookstoreServiceImpl implements BookstoreService
+@RequiredArgsConstructor
+public class BookServiceImpl implements BookService
 {
-    @Autowired
-    private BookRepo bookRepo;
-
-    @Autowired
-    private AuthorRepo authorRepo;
+    private final BookRepo bookRepo;
+    private final AuthorRepo authorRepo;
 
     //------------------------------------------------------------------------------------------------------------------
     // getAllBooks()
@@ -176,24 +172,5 @@ public class BookstoreServiceImpl implements BookstoreService
         }
 
         this.bookRepo.deleteById(id);
-    }
-
-
-    //------------------------------------------------------------------------------------------------------------------
-    // getAllAuthors()
-    //------------------------------------------------------------------------------------------------------------------
-    @Override
-    public List<AuthorWithBooksDTO> getAllAuthors()
-    {
-        List<AuthorEntity> authorEntities = this.authorRepo.findAll();
-        return authorEntities.stream() //
-                .map(ae -> mapAuthorEntity2DTO(ae)) //
-                .collect(Collectors.toList());
-    }
-
-
-    private AuthorWithBooksDTO mapAuthorEntity2DTO(AuthorEntity authorEntity)
-    {
-        return AuthorWithBooksMapper.INSTANCE.mapEntityToDTO(authorEntity);
     }
 }

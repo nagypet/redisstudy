@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package hu.perit.redisstudy.businesslogic.api;
+package hu.perit.redisstudy.service.api;
+
+import hu.perit.redisstudy.rest.model.BookDTO;
+import hu.perit.redisstudy.rest.model.BookParams;
+import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
 
 import java.util.List;
 
-import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
-import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
-import hu.perit.redisstudy.rest.model.BookDTO;
-import hu.perit.redisstudy.rest.model.BookParams;
-
-public interface BookstoreService
+public interface BookService
 {
     List<BookDTO> getAllBooks();
 
-    public BookDTO getBookById(Long id) throws ResourceNotFoundException;
+    BookDTO getBookById(Long id) throws ResourceNotFoundException;
 
     long createBook(BookParams bookParams);
 
     void updateBook(Long id, BookParams bookParams) throws ResourceNotFoundException;
 
     void deleteBook(Long id) throws ResourceNotFoundException;
-
-    List<AuthorWithBooksDTO> getAllAuthors();
 }

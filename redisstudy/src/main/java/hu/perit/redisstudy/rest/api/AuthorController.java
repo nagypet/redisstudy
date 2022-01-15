@@ -16,32 +16,30 @@
 
 package hu.perit.redisstudy.rest.api;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import hu.perit.redisstudy.config.Constants;
 import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.RestController;
-
+import hu.perit.redisstudy.service.api.AuthorService;
 import hu.perit.spvitamin.core.took.Took;
 import hu.perit.spvitamin.spring.logging.AbstractInterfaceLogger;
 import hu.perit.spvitamin.spring.security.auth.AuthorizationService;
-import hu.perit.redisstudy.businesslogic.api.BookstoreService;
-import hu.perit.redisstudy.config.Constants;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 public class AuthorController extends AbstractInterfaceLogger implements AuthorApi
 {
 
     private final AuthorizationService authorizationService;
-    private final BookstoreService bookstoreService;
+    private final AuthorService authorService;
 
-    protected AuthorController(HttpServletRequest httpRequest, AuthorizationService authorizationService, BookstoreService bookstoreService)
+    protected AuthorController(HttpServletRequest httpRequest, AuthorizationService authorizationService, AuthorService authorService)
     {
         super(httpRequest);
         this.authorizationService = authorizationService;
-        this.bookstoreService = bookstoreService;
+        this.authorService = authorService;
     }
 
 
@@ -56,7 +54,7 @@ public class AuthorController extends AbstractInterfaceLogger implements AuthorA
         {
             this.traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_AUTHORS, "");
 
-            return this.bookstoreService.getAllAuthors();
+            return this.authorService.getAllAuthors();
         }
         catch (Error | RuntimeException ex)
         {

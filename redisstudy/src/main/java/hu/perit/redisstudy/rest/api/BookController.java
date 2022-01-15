@@ -20,7 +20,7 @@ import hu.perit.spvitamin.core.took.Took;
 import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
 import hu.perit.spvitamin.spring.logging.AbstractInterfaceLogger;
 import hu.perit.spvitamin.spring.security.auth.AuthorizationService;
-import hu.perit.redisstudy.businesslogic.api.BookstoreService;
+import hu.perit.redisstudy.service.api.BookService;
 import hu.perit.redisstudy.config.Constants;
 import hu.perit.redisstudy.rest.model.BookDTO;
 import hu.perit.redisstudy.rest.model.BookParams;
@@ -37,13 +37,13 @@ import java.util.List;
 public class BookController extends AbstractInterfaceLogger implements BookApi
 {
     private final AuthorizationService authorizationService;
-    private final BookstoreService bookstoreService;
+    private final BookService bookService;
 
-    protected BookController(HttpServletRequest httpRequest, AuthorizationService authorizationService, BookstoreService bookstoreService)
+    protected BookController(HttpServletRequest httpRequest, AuthorizationService authorizationService, BookService bookService)
     {
         super(httpRequest);
         this.authorizationService = authorizationService;
-        this.bookstoreService = bookstoreService;
+        this.bookService = bookService;
     }
 
 
@@ -58,7 +58,7 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
         {
             traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_BOOKS, "");
 
-            return this.bookstoreService.getAllBooks();
+            return this.bookService.getAllBooks();
         }
         catch (Exception ex)
         {
@@ -79,7 +79,7 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
         {
             traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_BOOK_BY_ID, String.format("id: %d", id));
 
-            return this.bookstoreService.getBookById(id);
+            return this.bookService.getBookById(id);
         }
         catch (Error | RuntimeException | ResourceNotFoundException ex)
         {
@@ -100,7 +100,7 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
         {
             traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_CREATE_BOOK, bookParams.toString());
 
-            long newUserId = this.bookstoreService.createBook(bookParams);
+            long newUserId = this.bookService.createBook(bookParams);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newUserId).toUri();
 
@@ -126,7 +126,7 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
             traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_UPDATE_BOOK,
                     String.format("id: %d, bookParams: %s", id, bookParams.toString()));
 
-            this.bookstoreService.updateBook(id, bookParams);
+            this.bookService.updateBook(id, bookParams);
         }
         catch (Error | RuntimeException | ResourceNotFoundException ex)
         {
@@ -147,7 +147,7 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
         {
             traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_DELETE_BOOK, String.format("id: %d", id));
 
-            this.bookstoreService.deleteBook(id);
+            this.bookService.deleteBook(id);
         }
         catch (Error | RuntimeException | ResourceNotFoundException ex)
         {
