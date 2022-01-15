@@ -1,0 +1,154 @@
+#docker compose for local development
+
+version: '3.6'
+
+networks:
+    back-tier-net:
+        driver: bridge
+    db-net:
+        driver: bridge
+    monitoring:
+        driver: bridge
+
+
+services: 
+      
+  
+    #####################################################################################                 
+    postgres:
+    #####################################################################################                 
+        container_name: redisstudy_postgres
+        image: postgres:10.13-alpine
+        environment:
+            - POSTGRES_PASSWORD=sa
+        ports:
+            - "5432:5432"
+        volumes:
+            - redisstudy_postgres:/var/lib/postgresql/data
+        networks: 
+            - back-tier-net
+            - db-net
+
+
+    #####################################################################################                 
+    pgadmin:
+    #####################################################################################                 
+        container_name: redisstudy_pgadmin
+        #image: dpage/pgadmin4
+        image: thajeztah/pgadmin4
+        #environment:
+        #    - PGADMIN_DEFAULT_EMAIL=postgres
+        #    - PGADMIN_DEFAULT_PASSWORD=sa
+        ports:
+            - "5400:5050"
+        volumes:
+            - redisstudy_pgadmin:/var/lib/pgadmin:rw
+        networks: 
+            - db-net
+        #logging:
+        #    driver: none  
+      
+  
+#    #####################################################################################                 
+#    redisstudy:
+#    #####################################################################################                 
+#        container_name: redisstudy
+#        image: redisstudy
+#        environment:
+#              - JAVA_OPTS=
+#              - WEBSERVICE_OPTS=-Dspring.profiles.active=devdocker
+#        ports:
+#            - "8400:8400"
+#        networks: 
+#            - back-tier-net
+#            - monitoring
+#        hostname: 'redisstudy'
+
+
+#    #####################################################################################                 
+#    prometheus:
+#    #####################################################################################                 
+#        container_name: prometheus
+#        image: wsstepbystep-prometheus
+#        volumes:
+#            - wsstepbystep_prometheus:/prometheus
+#        command: 
+#            - '--config.file=/etc/prometheus/prometheus.yml'
+#            - '--storage.tsdb.path=/prometheus'
+#            - '--web.console.libraries=/etc/prometheus/console_libraries'
+#            - '--web.console.templates=/etc/prometheus/consoles'
+#            - '--storage.tsdb.retention.time=200h'
+#            - '--web.enable-lifecycle'
+#        ports:
+#            - '9090:9090'
+#        networks: 
+#            - monitoring
+#        labels:
+#            hu.perit.template.cluster: "monitoring"
+#
+#
+#    #####################################################################################                 
+#    nodeexporter:
+#    #####################################################################################                 
+#        image: prom/node-exporter:v0.18.1
+#        container_name: nodeexporter
+#        volumes:
+#            - /proc:/host/proc:ro
+#            - /sys:/host/sys:ro
+#            - /:/rootfs:ro
+#        command:
+#            - '--path.procfs=/host/proc'
+#            - '--path.rootfs=/rootfs'
+#            - '--path.sysfs=/host/sys'
+#            - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+#        restart: unless-stopped
+#        ports:
+#            - '9100:9100'
+#        networks: 
+#            - monitoring
+#        labels:
+#            hu.perit.template.cluster: "monitoring"
+#
+#
+#    #####################################################################################                 
+#    cadvisor:
+#    #####################################################################################                 
+#        image: gcr.io/google-containers/cadvisor:v0.36.0
+#        container_name: cadvisor
+#        volumes:
+#            - /:/rootfs:ro
+#            - /var/run:/var/run:rw
+#            - /sys:/sys:ro
+#            - /var/lib/docker:/var/lib/docker:ro
+#            - /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+#        restart: unless-stopped
+#        ports:
+#            - '8080:8080'
+#        networks: 
+#            - monitoring
+#        labels:
+#            hu.perit.template.cluster: "monitoring"
+#
+#
+#    #####################################################################################                 
+#    grafana:
+#    #####################################################################################                 
+#        container_name: grafana
+#        image: wsstepbystep-grafana
+#        volumes:
+#            - wsstepbystep_grafana:/var/lib/grafana
+#        ports:
+#            - '3000:3000'
+#        networks: 
+#            - monitoring
+#        depends_on:
+#            - prometheus
+#        labels:
+#            hu.perit.template.cluster: "monitoring"
+
+  
+volumes:
+    redisstudy_postgres:
+    redisstudy_pgadmin:
+    #redisstudy__prometheus:
+    #redisstudy__grafana:

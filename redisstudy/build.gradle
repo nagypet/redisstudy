@@ -36,7 +36,7 @@ ext {
 
 
 application {
-    mainClassName = 'hu.perit.wsstepbystep.WsstepbystepApplication'
+    mainClassName = 'hu.perit.redisstudy.Application'
     // Some JVM options already set in common.gradle
     applicationDefaultJvmArgs += ['-Xmx512m', '-Xms32m']
 }

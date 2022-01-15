@@ -68,7 +68,7 @@ What is this project all about? Step by step, I show you how to do a production-
     ],
     "path": "uri=/books",
     "exception": {
-        "message": "Validation failed for argument [0] in public hu.perit.wsstepbystep.rest.model.ResponseUri hu.perit.wsstepbystep.rest.api.BookController.createBook(hu.perit.wsstepbystep.rest.model.BookParams) with 2 errors: [Field error in object 'bookParams' on field 'title': rejected value []; codes [Size.bookParams.title,Size.title,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [bookParams.title,title]; arguments []; default message [title],100,1]; default message [size must be between 1 and 100]] [Field error in object 'bookParams' on field 'pages': rejected value [-10]; codes [Min.bookParams.pages,Min.pages,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [bookParams.pages,pages]; arguments []; default message [pages],0]; default message [must be greater than or equal to 0]] ",
+        "message": "Validation failed for argument [0] in public hu.perit.redisstudy.rest.model.ResponseUri hu.perit.redisstudy.rest.api.BookController.createBook(hu.perit.redisstudy.rest.model.BookParams) with 2 errors: [Field error in object 'bookParams' on field 'title': rejected value []; codes [Size.bookParams.title,Size.title,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [bookParams.title,title]; arguments []; default message [title],100,1]; default message [size must be between 1 and 100]] [Field error in object 'bookParams' on field 'pages': rejected value [-10]; codes [Min.bookParams.pages,Min.pages,Min.java.lang.Integer,Min]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [bookParams.pages,pages]; arguments []; default message [pages],0]; default message [must be greater than or equal to 0]] ",
         "exceptionClass": "org.springframework.web.bind.MethodArgumentNotValidException",
         "superClasses": [
             "org.springframework.web.bind.MethodArgumentNotValidException",
@@ -901,7 +901,7 @@ You need the following steps:
 
 ```Java
 @SpringBootApplication
-@ComponentScan(basePackages = {"hu.perit.spvitamin", "hu.perit.wsstepbystep"})
+@ComponentScan(basePackages = {"hu.perit.spvitamin", "hu.perit.redisstudy"})
 @EnableRetry <==
 public class WsstepbystepApplication
 {
