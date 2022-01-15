@@ -16,22 +16,13 @@
 
 package hu.perit.redisstudy.db.postgres.table;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * #know-how:jpa-auditing
@@ -57,16 +48,5 @@ public class AuthorEntity extends BaseEntity
 
     // The inverse side of the many-to-many relationship
     @ManyToMany(mappedBy = "authorEntities", fetch = FetchType.LAZY)
-    private Set<BookEntity> bookEntities = new HashSet<>();
-
-    public Set<BookEntity> getBooks()
-    {
-        if (this.bookEntities != null)
-        {
-            return this.bookEntities;
-        }
-
-        return Collections.emptySet();
-    }
-
+    private Set<BookEntity> bookEntities;
 }

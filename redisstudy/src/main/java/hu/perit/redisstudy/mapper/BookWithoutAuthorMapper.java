@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package hu.perit.redisstudy.rest.model;
+package hu.perit.redisstudy.mapper;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
+import hu.perit.redisstudy.db.postgres.table.BookEntity;
+import hu.perit.redisstudy.rest.model.BookDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValueMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-import java.time.LocalDate;
-import java.util.Set;
-
-@Getter
-@Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookDTO extends Auditable
+@Mapper(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface BookWithoutAuthorMapper
 {
-    private Long id;
-    private String title;
-    private Set<AuthorDTO> authors;
-    private Integer pages;
-    private LocalDate dateIssued;
-    private Long recVersion;
+    @Mapping(target = "authors", ignore = true)
+    BookDTO mapEntityToDTO(BookEntity entity);
 }

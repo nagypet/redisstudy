@@ -16,28 +16,28 @@
 
 package hu.perit.redisstudy.businesslogic.bookstore;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
-import hu.perit.redisstudy.rest.model.BookDTO;
-import hu.perit.redisstudy.rest.model.BookParams;
-import org.modelmapper.Conditions;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import hu.perit.spvitamin.core.typehelpers.LongUtils;
-import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
 import hu.perit.redisstudy.businesslogic.api.BookstoreService;
 import hu.perit.redisstudy.db.postgres.repo.AuthorRepo;
 import hu.perit.redisstudy.db.postgres.repo.BookRepo;
 import hu.perit.redisstudy.db.postgres.table.AuthorEntity;
 import hu.perit.redisstudy.db.postgres.table.BookEntity;
+import hu.perit.redisstudy.mapper.AuthorMapper;
+import hu.perit.redisstudy.mapper.AuthorWithBooksMapper;
+import hu.perit.redisstudy.mapper.BookMapper;
+import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
+import hu.perit.redisstudy.rest.model.BookDTO;
+import hu.perit.redisstudy.rest.model.BookParams;
+import hu.perit.spvitamin.core.typehelpers.LongUtils;
+import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookstoreServiceImpl implements BookstoreService
@@ -79,9 +79,7 @@ public class BookstoreServiceImpl implements BookstoreService
 
     private BookDTO mapBookEntity2DTO(BookEntity be)
     {
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(be, BookDTO.class);
+        return BookMapper.INSTANCE.mapEntityToDTO(be);
     }
 
 
@@ -98,20 +96,17 @@ public class BookstoreServiceImpl implements BookstoreService
 
     public long createOrUpdateBookEntity(BookParams bookParams, BookEntity destinationBookEntity)
     {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-
         BookEntity bookEntity = null;
         if (destinationBookEntity != null)
         {
             // Mapping fields of bookParams into destinationBookEntity
             bookEntity = destinationBookEntity;
-            modelMapper.map(bookParams, bookEntity);
+            BookMapper.INSTANCE.updateEntityWithNonNulls(bookParams, bookEntity);
         }
         else
         {
             // Creating a new BookEntity object
-            bookEntity = modelMapper.map(bookParams, BookEntity.class);
+            bookEntity = BookMapper.INSTANCE.createEntity(bookParams);
         }
 
         // Authors
@@ -120,7 +115,7 @@ public class BookstoreServiceImpl implements BookstoreService
             // First we save the authors without id
             List<AuthorEntity> newAuthorsToSave = bookParams.getAuthors().stream() //
                     .filter(a -> LongUtils.isBlank(a.getId())) //
-                    .map(dto -> modelMapper.map(dto, AuthorEntity.class)).collect(Collectors.toList());
+                    .map(dto -> AuthorMapper.INSTANCE.createEntity(dto)).collect(Collectors.toList());
             List<AuthorEntity> newAuthorEntities = this.authorRepo.saveAll(newAuthorsToSave);
 
             // Now gather authors with id
@@ -135,7 +130,7 @@ public class BookstoreServiceImpl implements BookstoreService
             authorEntities.addAll(existingAuthorEntities);
             authorEntities.addAll(newAuthorEntities);
 
-            if (!bookEntity.getAuthors().equals(authorEntities))
+            if (!authorEntities.equals(bookEntity.getAuthorEntities()))
             {
                 bookEntity.setAuthorEntities(authorEntities);
             }
@@ -197,10 +192,8 @@ public class BookstoreServiceImpl implements BookstoreService
     }
 
 
-    private AuthorWithBooksDTO mapAuthorEntity2DTO(AuthorEntity be)
+    private AuthorWithBooksDTO mapAuthorEntity2DTO(AuthorEntity authorEntity)
     {
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(be, AuthorWithBooksDTO.class);
+        return AuthorWithBooksMapper.INSTANCE.mapEntityToDTO(authorEntity);
     }
 }

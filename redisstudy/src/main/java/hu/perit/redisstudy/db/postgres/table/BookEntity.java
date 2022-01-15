@@ -16,24 +16,13 @@
 
 package hu.perit.redisstudy.db.postgres.table;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * @author Peter Nagy
@@ -64,21 +53,9 @@ public class BookEntity extends BaseEntity
     // The owning side of the many-to-many relationship
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "bookxauthor", schema = "bookstore", // 
-        joinColumns = {@JoinColumn(name = "book_id")}, //
-        inverseJoinColumns = {@JoinColumn(name = "author_id")} //
+            joinColumns = {@JoinColumn(name = "book_id")}, //
+            inverseJoinColumns = {@JoinColumn(name = "author_id")} //
     )
     // Important to have a Set here! Hibernate will generate a composite primary key only when using a Set.
     private Set<AuthorEntity> authorEntities;
-
-
-    public Set<AuthorEntity> getAuthors()
-    {
-        if (this.authorEntities != null)
-        {
-            return this.authorEntities;
-        }
-
-        return Collections.emptySet();
-    }
-
 }
