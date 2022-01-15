@@ -18,6 +18,7 @@ package hu.perit.redisstudy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.retry.annotation.EnableRetry;
 
@@ -26,6 +27,7 @@ import hu.perit.spvitamin.spring.environment.EnvironmentPostProcessor;
 @SpringBootApplication
 @ComponentScan(basePackages = {"hu.perit.spvitamin", "hu.perit.redisstudy"})
 @EnableRetry
+@EnableCaching
 public class Application
 {
 

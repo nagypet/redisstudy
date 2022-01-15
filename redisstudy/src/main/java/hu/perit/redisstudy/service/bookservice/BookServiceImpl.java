@@ -28,6 +28,8 @@ import hu.perit.redisstudy.service.api.BookService;
 import hu.perit.spvitamin.core.typehelpers.LongUtils;
 import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,7 @@ public class BookServiceImpl implements BookService
     // getBookById
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @Cacheable(cacheNames = "book", key = "#id")
     public BookDTO getBookById(Long id) throws ResourceNotFoundException
     {
         Optional<BookEntity> bookEntity = this.bookRepo.findById(id);
@@ -147,6 +150,7 @@ public class BookServiceImpl implements BookService
     //------------------------------------------------------------------------------------------------------------------
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "book", key = "#id")
     public void updateBook(Long id, BookParams bookParams) throws ResourceNotFoundException
     {
         Optional<BookEntity> byId = this.bookRepo.findById(id);

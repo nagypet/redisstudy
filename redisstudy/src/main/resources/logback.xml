@@ -31,6 +31,7 @@
 	<logger name="org.reflections" level="ERROR"/>
 	<logger name="org.springframework.security.authentication" level="DEBUG"/>
 	<logger name="org.springframework.boot.web.embedded.tomcat" level="INFO"/>
+	<logger name="org.springframework.cache" level="TRACE"/>
 	<logger name="com.zaxxer.hikari.HikariConfig" level="INFO"/>
 	<logger name="com.zaxxer.hikari" level="ERROR"/>
 	<logger name="org.hibernate.SQL" level="DEBUG"/>
