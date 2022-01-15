@@ -9,7 +9,7 @@ RUN apk add --no-cache tzdata
 ENV TZ Europe/Budapest
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-WORKDIR /usr/src/webservice
+WORKDIR /usr/src/redisstudy
 
 EXPOSE 8080
 
@@ -18,6 +18,6 @@ COPY ./snapshot-dependencies* ./lib
 COPY ./bin ./bin
 COPY ./application ./lib
 
-WORKDIR /usr/src/webservice/bin
+WORKDIR /usr/src/redisstudy/bin
 
-CMD ["sh", "./webservice"]
+CMD ["sh", "./redisstudy"]

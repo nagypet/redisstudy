@@ -62,20 +62,20 @@ services:
             - back-tier-net
 
   
-#    #####################################################################################                 
-#    redisstudy:
-#    #####################################################################################                 
-#        container_name: redisstudy
-#        image: redisstudy
-#        environment:
-#              - JAVA_OPTS=
-#              - WEBSERVICE_OPTS=-Dspring.profiles.active=devdocker
-#        ports:
-#            - "8400:8400"
-#        networks: 
-#            - back-tier-net
-#            - monitoring
-#        hostname: 'redisstudy'
+    #####################################################################################                 
+    redisstudy:
+    #####################################################################################                 
+        container_name: redisstudy-webservice
+        image: redisstudy-redisstudy
+        environment:
+              - JAVA_OPTS=
+              - REDISSTUDY_OPTS=-Dspring.profiles.active=docker
+        ports:
+            - "8400:8400"
+        networks: 
+            - back-tier-net
+            - monitoring
+        hostname: 'redisstudy'
 
 
 #    #####################################################################################                 
