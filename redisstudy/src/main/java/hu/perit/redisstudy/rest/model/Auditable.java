@@ -16,6 +16,7 @@
 
 package hu.perit.redisstudy.rest.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -26,8 +27,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder(alphabetic = true)
-public abstract class Auditable
+public abstract class Auditable implements Serializable
 {
+    private static final long serialVersionUID = -7585090875901427493L;
+
     private String createdBy;
     private LocalDateTime createdAt;
     private String updatedBy;

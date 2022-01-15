@@ -17,7 +17,7 @@ services:
     #####################################################################################                 
     postgres:
     #####################################################################################                 
-        container_name: redisstudy_postgres
+        container_name: redisstudy-postgres
         image: postgres:10.13-alpine
         environment:
             - POSTGRES_PASSWORD=sa
@@ -33,7 +33,7 @@ services:
     #####################################################################################                 
     pgadmin:
     #####################################################################################                 
-        container_name: redisstudy_pgadmin
+        container_name: redisstudy-pgadmin
         #image: dpage/pgadmin4
         image: thajeztah/pgadmin4
         #environment:
@@ -48,6 +48,19 @@ services:
         #logging:
         #    driver: none  
       
+
+    #####################################################################################                 
+    redis:
+    #####################################################################################                 
+        container_name: redisstudy-redis
+        image: redisstudy-redis
+        environment:
+            - REDIS_PASSWORD=apfel
+        ports:
+            - 6379:6379
+        networks: 
+            - back-tier-net
+
   
 #    #####################################################################################                 
 #    redisstudy:
