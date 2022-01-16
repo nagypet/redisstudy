@@ -30,14 +30,17 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public abstract class BaseEntity
+public abstract class BaseEntity implements Serializable
 {
+    private static final long serialVersionUID = -1368350313300467651L;
+
     protected abstract Long getId();
 
 

@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService
     // getBookById
     //------------------------------------------------------------------------------------------------------------------
     @Override
-    @Cacheable(cacheNames = "book", key = "#id")
+    //@Cacheable(cacheNames = "book", key = "#id")
     public BookDTO getBookById(Long id) throws ResourceNotFoundException
     {
         Optional<BookEntity> bookEntity = this.bookRepo.findById(id);
@@ -150,7 +150,7 @@ public class BookServiceImpl implements BookService
     //------------------------------------------------------------------------------------------------------------------
     @Override
     @Transactional
-    @CacheEvict(cacheNames = "book", key = "#id")
+    //@CacheEvict(cacheNames = "book", key = "#id")
     public void updateBook(Long id, BookParams bookParams) throws ResourceNotFoundException
     {
         Optional<BookEntity> byId = this.bookRepo.findById(id);

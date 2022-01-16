@@ -16,11 +16,21 @@
 
 package hu.perit.redisstudy.db.postgres.repo;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import hu.perit.redisstudy.db.postgres.table.BookEntity;
 
+import java.util.Optional;
+
 public interface BookRepo extends JpaRepository<BookEntity, Long>
 {
+    @Override
+    @Cacheable(cacheNames = "book-repo", key = "#id")
+    Optional<BookEntity> findById(Long id);
 
+    @Override
+    @CacheEvict(cacheNames = "book-repo", key = "#entity.id")
+    <S extends BookEntity> S save(S entity);
 }
