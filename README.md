@@ -1,6 +1,8 @@
 # redisstudy
 
-A spring caching mechanizmusok működését demonstráló alkalmazás
+[Magyar verzió](https://github.com/nagypet/redisstudy/blob/development/README_hu.md)
+
+An application that demonstrates the operation of spring caching mechanisms.
 
 ## Links
 
@@ -12,29 +14,29 @@ A spring caching mechanizmusok működését demonstráló alkalmazás
 - Prometheus: https://localhost:8400/actuator/prometheus
 
 
-## Build parancsok
+## Build commands
 
-A build parancsokat ki lehet adni mind a projekt gyökérkönyvtárában, mind akármelyik build target alkönyvtárában.
+Build commands can be issued both in the root directory of the project and in any subdirectory.
 
-- `gradlew dist` - elkészíti az install csomagot (no fat jar). Lásd `redisstudy\build\install\redisstudy\`
-- `gradlew run` - futtatja az alkalmazást
-- `gradlew dockerImage or gradlew doI` - docker Image. Ezt a projekt gyökérkönyvtárában érdemes kiadni, mert akkor az összes szükséges image-et elkészíti
-
-
-## Futtatás az IDE-ből
-- Ha az IDE-ből futtatjuk az alkalmazást, akkor be kell állítani, hogy a build után a következő gradle parancsok lefussanak: `prepareRunInIDEA2021` vagy `prepareRunInEclipse`
+- `gradlew dist` - creates the install package (no fat jar). See in: `redisstudy\build\install\redisstudy\`
+- `gradlew run` - runs the application
+- `gradlew dockerImage or gradlew doI` - docker Image. It is worth executing this in the root directory of the project, because then it will create all the necessary images.
 
 
-## Postgres adatbázis létrehozása
+## Running from the IDE
+- If you are running the application from the IDE, you need to configure the following gradle commands to run after build: `prepareRunInIDEA2021` or `prepareRunInEclipse`.
 
-- Menjünk a következő könyvtárba: `docker-compose\redisstudy` és futtassuk le ezt a parancsot `coU --infra`. Ez elindítja az adatbázist és a redist.
-- A http://localhost:5400 porton érjük el a pgadmin-t. Lépjünk be, és csatlakozzunk az adatbázisra. Ennek a hostneve: postgres
-- Készítsünk egy üres adatbázist redisstudy névvel
-- Futtassuk le a `redisstudy\db\postgres\scripts.sql` szkriptet.
 
-## Futtatás dockerben
-- Menjünk a projekt gyökérkönyvtárába és adjuk ki: `gradlew doI`
-- Ezután nyissunk egy parancssort a `docker-compose\redisstudy` könyvtárban és futtassuk le: `coU --svc`
+## Creating the Postgres database
+
+- Let's go to the following directory: `docker-compose\redisstudy` and run this command `coU --infra`. This will start up the database and the redis service.
+- pgadmin can be accessed through: http://localhost:5400. Log in and connect to the database. Its hostname is postgres
+- Create an empty database named redisstudy
+- Run this script: `redisstudy\db\postgres\scripts.sql`
+
+## Running in docker
+- Go to the root directory of the project and execute this command: `gradlew doI`
+- Then open a command prompt at `docker-compose\redisstudy` and run: `coU --svc`
 
 ```
 C:\np\github\redisstudy\docker-compose\redisstudy>docker ps
@@ -45,11 +47,11 @@ c8680b173460        thajeztah/pgadmin4     "python ./usr/local/…"   2 hours ag
 9a9c60447a21        redisstudy-redis       "docker-entrypoint.s…"   2 hours ago         Up 2 hours          0.0.0.0:6379->6379/tcp             redisstudy-redis
 ```
 
-## Tesztelés
+## Testing
 
-Mivel ez a keretprogram egy teljes értékű alkalmazás, authentikáció szükséges a REST végpontok hívásához. Minden végpont JWT tokent használ, kivéve az /authenticate végpont, amelyik Basic authentikációval működik. Bejelentkezéshez használjuk az admin/admin felhasználónév és jelszó párost.
+Because this framework is a full-featured application, authentication is required to call REST endpoints. All endpoints use a JWT token, except for the / authenticate endpoint, which works with Basic authentication. Use the admin / admin username and password pair to log in.
 
-Az /authenticate végpont segítségével generáljunk egy tokent. 
+Use the /authenticate endpoint to generate a token.
 ```
 {
   "sub": "admin",
@@ -58,28 +60,28 @@ Az /authenticate végpont segítségével generáljunk egy tokent.
   "exp": "2022-01-15 15:02:46.537"
 }
 ```
-Ezt a tokent használhatjuk a többi végpontnál belépésre. A swagger-ben így adjuk meg a tokent: `Bearer eyJhbGciOiJSUzUxMiJ9.eyJz...`
+This token can be used to log in to other endpoints. In the swagger, enter the token as follows: `Bearer eyJhbGciOiJSUzUxMiJ9.eyJz ...`
 
-A book-controller segítségével hozzunk létre néhány könyvet. (`POST /books` végpont) Például:
+Use the book-controller to create some books. (`POST /books` endpoint) For example:
 ```
 {
   "authors": [
     {
       "id": 0,
-      "name": "Vámos Miklós"
+      "name": "Ernest Hamingway"
     }
   ],
   "dateIssued": "2012-01-15",
   "pages": 243,
-  "title": "Apák könyve"
+  "title": "The Old Man And The Sea"
 }
 ```
 
-Ha a szerzőnél 0-ás id-t adunk át, akkor az alkalmazás létrehozza mind a szerző, mind a könyv entitásokat, és összerendeli őket egymással.
+If we pass an id of 0 to the author, the application creates both the author and book entities and associates them with each other.
 
-### Cacheable annotáció
+### Cacheable annotation
 
-Ezután a `GET /books/{id}` végpont segítségével lekérdezhetjük azonosító alapján a létrehozott könyvet. Erre a végpontra be van állítva a cache-elés az alábbi módon:
+The `GET /books/{id}` endpoint can then be used to query the created book by ID. This endpoint is cached as follows:
 ```
 @Cacheable(cacheNames = "book", key = "#id")
 public BookDTO getBookById(Long id) throws ResourceNotFoundException
@@ -94,11 +96,11 @@ public BookDTO getBookById(Long id) throws ResourceNotFoundException
 }
 
 ```
-A `redisstudy-webservice` konténer logjában ellenőrizhetjük a cache működését.
+You can check the cache operation in the `redisstudy-webservice` container log.
 
 ### Redis CLI
 
-Lépjünk be a redis konténerbe: `docker exec -it redisstudy-redis bash`.
+Enter the redis container: `docker exec -it redisstudy-redis bash`.
 
 ```
 C:\np\github\redisstudy\docker-compose\redisstudy>docker exec -it redisstudy-redis bash
@@ -109,26 +111,26 @@ OK
 PONG
 ```
 
-A Redis CLI parancsai itt találhatók: [cli](https://redis.io/commands#generic)
+Redis CLI commands can be found here: [cli](https://redis.io/commands#generic)
 
-Pl. a kulcsokat kilistázhatjuk az alábbi paranccsal: 
+For example, you can list the keys with the following command:
 ```
 127.0.0.1:6379> keys *
 1) "book::2"
 2) "book::1"
 ```
 
-Az alkalmazás konfigjában úgy állítottuk be, hogy a Redis 4 óráig tárolja az adatokat. Ellenőrizhetjük, hogy mennyi idő múlva törli ki a cache az adatot:
+In the application configuration, Redis is set to store data for up to 4 hours. You can check how long a key will reside in the cache before beeing cleared:
 
 ```
 127.0.0.1:6379> ttl book::1
 (integer) 8712
 ```
-Ez a kulcs 8712 másodpercig marad még a cache-ben.
+This key remains in the cache for 8712 seconds.
 
-### A cache invalidálása
+### Invalidating the cache
 
-Természetesen ha megváltozik az adat az adatbázisban, akkor a cache-t is üríteni kell. Erre szolgál a `@CacheEvict` annotáció:
+Of course, if the data in the database changes, the cache must also be emptied. This is what the `@CacheEvict` annotation is for:
 
 ```
 @CacheEvict(cacheNames = "book", key = "#id")
