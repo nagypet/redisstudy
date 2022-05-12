@@ -41,5 +41,9 @@ task dockerGeatherInputs(type: Copy) {
 		from 'docker/conf'
 	}
 	
+	into ("./etc") {
+		from 'docker/etc'
+	}
+	
 	doLast { dockerImageInputsChanged = true }
 }
