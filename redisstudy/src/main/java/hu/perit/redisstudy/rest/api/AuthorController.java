@@ -19,54 +19,28 @@ package hu.perit.redisstudy.rest.api;
 import hu.perit.redisstudy.config.Constants;
 import hu.perit.redisstudy.rest.model.AuthorWithBooksDTO;
 import hu.perit.redisstudy.service.api.AuthorService;
-import hu.perit.spvitamin.core.took.Took;
-import hu.perit.spvitamin.spring.logging.AbstractInterfaceLogger;
+import hu.perit.spvitamin.spring.restmethodlogger.LoggedRestMethod;
 import hu.perit.spvitamin.spring.security.auth.AuthorizationService;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-public class AuthorController extends AbstractInterfaceLogger implements AuthorApi
+@RequiredArgsConstructor
+public class AuthorController implements AuthorApi
 {
-
     private final AuthorizationService authorizationService;
     private final AuthorService authorService;
-
-    protected AuthorController(HttpServletRequest httpRequest, AuthorizationService authorizationService, AuthorService authorService)
-    {
-        super(httpRequest);
-        this.authorizationService = authorizationService;
-        this.authorService = authorService;
-    }
 
 
     //------------------------------------------------------------------------------------------------------------------
     // getAllAuthors()
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_GET_ALL_AUTHORS, subsystem = Constants.SUBSYSTEM_NAME)
     public List<AuthorWithBooksDTO> getAllAuthors()
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            this.traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_AUTHORS, "");
-
-            return this.authorService.getAllAuthors();
-        }
-        catch (Error | RuntimeException ex)
-        {
-            this.traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_AUTHORS, ex);
-            throw ex;
-        }
+        return this.authorService.getAllAuthors();
     }
-
-    @Override
-    protected String getSubsystemName()
-    {
-        return Constants.SUBSYSTEM_NAME;
-    }
-
 }

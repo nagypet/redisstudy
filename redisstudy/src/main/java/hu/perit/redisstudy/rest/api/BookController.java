@@ -16,55 +16,37 @@
 
 package hu.perit.redisstudy.rest.api;
 
-import hu.perit.spvitamin.core.took.Took;
-import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
-import hu.perit.spvitamin.spring.logging.AbstractInterfaceLogger;
-import hu.perit.spvitamin.spring.security.auth.AuthorizationService;
-import hu.perit.redisstudy.service.api.BookService;
 import hu.perit.redisstudy.config.Constants;
 import hu.perit.redisstudy.rest.model.BookDTO;
 import hu.perit.redisstudy.rest.model.BookParams;
 import hu.perit.redisstudy.rest.model.ResponseUri;
-import org.springframework.security.core.userdetails.UserDetails;
+import hu.perit.redisstudy.service.api.BookService;
+import hu.perit.spvitamin.spring.exception.ResourceNotFoundException;
+import hu.perit.spvitamin.spring.restmethodlogger.LoggedRestMethod;
+import hu.perit.spvitamin.spring.security.auth.AuthorizationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 
 @RestController
-public class BookController extends AbstractInterfaceLogger implements BookApi
+@RequiredArgsConstructor
+public class BookController implements BookApi
 {
     private final AuthorizationService authorizationService;
     private final BookService bookService;
-
-    protected BookController(HttpServletRequest httpRequest, AuthorizationService authorizationService, BookService bookService)
-    {
-        super(httpRequest);
-        this.authorizationService = authorizationService;
-        this.bookService = bookService;
-    }
 
 
     //------------------------------------------------------------------------------------------------------------------
     // getAllBooks()
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_GET_ALL_BOOKS, subsystem = Constants.SUBSYSTEM_NAME)
     public List<BookDTO> getAllBooks()
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_BOOKS, "");
-
-            return this.bookService.getAllBooks();
-        }
-        catch (Exception ex)
-        {
-            traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_ALL_BOOKS, ex);
-            throw ex;
-        }
+        return this.bookService.getAllBooks();
     }
 
 
@@ -72,20 +54,10 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
     // getBookById
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_GET_BOOK_BY_ID, subsystem = Constants.SUBSYSTEM_NAME)
     public BookDTO getBookById(Long id) throws ResourceNotFoundException
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_BOOK_BY_ID, String.format("id: %d", id));
-
-            return this.bookService.getBookById(id);
-        }
-        catch (Error | RuntimeException | ResourceNotFoundException ex)
-        {
-            traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_GET_BOOK_BY_ID, ex);
-            throw ex;
-        }
+        return this.bookService.getBookById(id);
     }
 
 
@@ -93,24 +65,12 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
     // createBook
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_CREATE_BOOK, subsystem = Constants.SUBSYSTEM_NAME)
     public ResponseUri createBook(BookParams bookParams)
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_CREATE_BOOK, bookParams.toString());
-
-            long newUserId = this.bookService.createBook(bookParams);
-
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newUserId).toUri();
-
-            return new ResponseUri().location(location.toString());
-        }
-        catch (Error | RuntimeException ex)
-        {
-            traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_CREATE_BOOK, ex);
-            throw ex;
-        }
+        long newUserId = this.bookService.createBook(bookParams);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newUserId).toUri();
+        return new ResponseUri().location(location.toString());
     }
 
 
@@ -118,21 +78,10 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
     // updateBook
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_UPDATE_BOOK, subsystem = Constants.SUBSYSTEM_NAME)
     public void updateBook(Long id, BookParams bookParams) throws ResourceNotFoundException
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_UPDATE_BOOK,
-                    String.format("id: %d, bookParams: %s", id, bookParams.toString()));
-
-            this.bookService.updateBook(id, bookParams);
-        }
-        catch (Error | RuntimeException | ResourceNotFoundException ex)
-        {
-            traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_UPDATE_BOOK, ex);
-            throw ex;
-        }
+        this.bookService.updateBook(id, bookParams);
     }
 
 
@@ -140,26 +89,9 @@ public class BookController extends AbstractInterfaceLogger implements BookApi
     // deleteBook
     //------------------------------------------------------------------------------------------------------------------
     @Override
+    @LoggedRestMethod(eventId = Constants.EVENT_ID_DELETE_BOOK, subsystem = Constants.SUBSYSTEM_NAME)
     public void deleteBook(Long id) throws ResourceNotFoundException
     {
-        UserDetails user = this.authorizationService.getAuthenticatedUser();
-        try (Took took = new Took())
-        {
-            traceIn(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_DELETE_BOOK, String.format("id: %d", id));
-
-            this.bookService.deleteBook(id);
-        }
-        catch (Error | RuntimeException | ResourceNotFoundException ex)
-        {
-            traceOut(null, user.getUsername(), getMyMethodName(), Constants.EVENT_ID_DELETE_BOOK, ex);
-            throw ex;
-        }
-    }
-
-
-    @Override
-    protected String getSubsystemName()
-    {
-        return Constants.SUBSYSTEM_NAME;
+        this.bookService.deleteBook(id);
     }
 }

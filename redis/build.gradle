@@ -24,6 +24,7 @@ ext {
 	dockerImageName = "redisstudy-redis"
 	dockerBuildDir = new File(buildDir, 'docker/redis').getAbsolutePath()
 	dockerImageInputsChanged = false
+    set('dockerRegistry', 'docker-registry:5000')
 }
 
 
