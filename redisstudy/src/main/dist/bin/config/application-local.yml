@@ -18,26 +18,16 @@
 #-----------------------------------------------------------------------------------------------------------------------
 # datasource postgres on postgres
 #-----------------------------------------------------------------------------------------------------------------------
-datasource.postgres.db-type=postgresql
-datasource.postgres.host=postgres
-datasource.postgres.db-name=redisstudy
-datasource.postgres.username=postgres
-datasource.postgres.encrypted-password=1tvmTu8Ya8A=
-datasource.postgres.ddl-auto=validate
+datasource:
+  postgres:
+    host: 192.168.128.151
+    port: 31800
 
 
 #-----------------------------------------------------------------------------------------------------------------------
 # redis
 #-----------------------------------------------------------------------------------------------------------------------
-spring.redis.host=redis
-spring.redis.password=apfel
-spring.redis.timeout=10000
-# 4 hours
-spring.cache.redis.time-to-live=14400000
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Server settings
-#-----------------------------------------------------------------------------------------------------------------------
-server.external-url=http://${APP}.${NAMESPACE}.${DOMAIN}
-server.ssl.enabled=false
+spring:
+  redis:
+    host: 192.168.128.151
+    port: 31801

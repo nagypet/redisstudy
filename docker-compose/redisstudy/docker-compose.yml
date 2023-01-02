@@ -67,9 +67,6 @@ services:
     #####################################################################################                 
         container_name: redisstudy-webservice
         image: redisstudy-redisstudy
-        environment:
-              - JAVA_OPTS=
-              - REDISSTUDY_OPTS=-Dspring.profiles.active=docker
         ports:
             - "8400:8400"
         networks: 

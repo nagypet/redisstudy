@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: webservice
-        image: docker-registry:5000/redisstudy-redisstudy:1.1.4-SNAPSHOT
+        image: docker-registry:5000/redisstudy-redisstudy:1.1.5-SNAPSHOT
         imagePullPolicy: Always
         ports:
         - name: http
