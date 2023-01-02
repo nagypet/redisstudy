@@ -2,12 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: pgadmin-ingress
+  namespace: redisstudy
   annotations:
     nginx.ingress.kubernetes.io/use-regex: /$1
 spec:
   ingressClassName: nginx
   rules:
-  - host: pgadmin.k8s-test.perit.hu
+  - host: pgadmin.redisstudy.k8s-test.perit.hu
     http:
       paths:
       - path: /

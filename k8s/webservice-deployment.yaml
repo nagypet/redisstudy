@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redisstudy
+  name: webservice
+  namespace: redisstudy
 spec:
   type: ClusterIP
   selector:
-    component: redisstudy-redisstudy
+    component: webservice
   ports:
   - protocol: TCP
     port: 8400
@@ -14,20 +15,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redisstudy-redisstudy
+  name: webservice
+  namespace: redisstudy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: redisstudy-redisstudy
+      component: webservice
   template:
     metadata:
       labels:
-        component: redisstudy-redisstudy
+        component: webservice
     spec:
       containers:
-      - name: redisstudy-redisstudy
-        image: docker-registry:5000/redisstudy-redisstudy:1.1.3-SNAPSHOT
+      - name: webservice
+        image: docker-registry:5000/redisstudy-redisstudy:1.1.4-SNAPSHOT
         imagePullPolicy: Always
         ports:
         - name: http
@@ -36,7 +38,9 @@ spec:
         env:
         - name: REDISSTUDY_OPTS
           value: -Dspring.profiles.active=k8s
-        - name: APP_NAME
+        - name: APP
+          value: webservice
+        - name: NAMESPACE
           value: redisstudy
-        - name: K8S_DOMAIN
+        - name: DOMAIN
           value: k8s-test.perit.hu

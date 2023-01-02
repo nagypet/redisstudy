@@ -1,41 +1,12 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redisstudy-postgres
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      component: redisstudy-postgres
-  template:
-    metadata:
-      labels:
-        component: redisstudy-postgres
-    spec:
-      containers:
-        - name: redisstudy-postgres
-          image: postgres:10.13-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_PASSWORD
-              value: sa
-          volumeMounts:
-            - name: redisstudy-postgres-volume
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: redisstudy-postgres-volume
-          persistentVolumeClaim:
-            claimName: redisstudy-postgres-volume
----
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres
+  namespace: redisstudy
 spec:
   type: ClusterIP
   selector:
-    component: redisstudy-postgres
+    component: postgres
   ports:
     - port: 5432
       targetPort: 5432
@@ -43,10 +14,42 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redisstudy-postgres-volume
+  name: postgres-volume-claim
+  namespace: redisstudy
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: redisstudy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.13-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: sa
+          volumeMounts:
+            - name: postgres-volume
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-volume
+          persistentVolumeClaim:
+            claimName: postgres-volume-claim

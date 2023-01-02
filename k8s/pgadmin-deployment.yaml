@@ -1,43 +1,46 @@
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redisstudy-pgadmin-volume
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2Gi
----
-apiVersion: v1
 kind: Service
 metadata:
   name: pgadmin-service
+  namespace: redisstudy
 spec:
   ports:
   - protocol: TCP
     port: 5050
     targetPort: http
   selector:
-    component: redisstudy-pgadmin
+    component: pgadmin
   type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-volume-claim
+  namespace: redisstudy
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redisstudy-pgadmin
+  name: pgadmin
+  namespace: redisstudy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: redisstudy-pgadmin
+      component: pgadmin
   template:
     metadata:
       labels:
-        component: redisstudy-pgadmin
+        component: pgadmin
     spec:
       containers:
-        - name: redisstudy-pgadmin
+        - name: pgadmin
           image: thajeztah/pgadmin4
           ports:
             - name: http
@@ -47,9 +50,9 @@ spec:
             - name: POSTGRES_PASSWORD
               value: "sa"
           volumeMounts:
-            - name: redisstudy-pgadmin-volume
+            - name: pgadmin-volume
               mountPath: /pgadmin
       volumes:
-        - name: redisstudy-pgadmin-volume
+        - name: pgadmin-volume
           persistentVolumeClaim:
-            claimName: redisstudy-pgadmin-volume
+            claimName: pgadmin-volume-claim
