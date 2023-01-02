@@ -9,7 +9,7 @@ spec:
     component: webservice
   ports:
   - protocol: TCP
-    port: 8400
+    port: 80
     targetPort: http
 ---
 apiVersion: apps/v1
@@ -29,15 +29,17 @@ spec:
     spec:
       containers:
       - name: webservice
-        image: docker-registry:5000/redisstudy-redisstudy:1.1.5-SNAPSHOT
+        image: docker-registry:5000/redisstudy-redisstudy:1.1.6-SNAPSHOT
         imagePullPolicy: Always
         ports:
         - name: http
-          containerPort: 8400
+          containerPort: 80
           protocol: TCP
         env:
         - name: REDISSTUDY_OPTS
           value: -Dspring.profiles.active=k8s
+        - name: PROTOCOL
+          value: https
         - name: APP
           value: webservice
         - name: NAMESPACE

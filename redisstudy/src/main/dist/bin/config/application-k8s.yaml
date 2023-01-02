@@ -19,5 +19,6 @@
 # Server settings
 #-----------------------------------------------------------------------------------------------------------------------
 server:
-  external-url: http://${APP}.${NAMESPACE}.${DOMAIN}
+  port: 80
+  external-url: ${PROTOCOL}://${APP}.${NAMESPACE}.${DOMAIN}
   ssl.enabled: false
