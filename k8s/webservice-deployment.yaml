@@ -3,12 +3,15 @@ kind: Service
 metadata:
   name: webservice
   namespace: redisstudy
+  labels:
+    monitored: prometheus
 spec:
   type: ClusterIP
   selector:
     component: webservice
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 80
     targetPort: http
 ---
@@ -29,7 +32,7 @@ spec:
     spec:
       containers:
       - name: webservice
-        image: docker-registry:5000/redisstudy-redisstudy:1.1.6-SNAPSHOT
+        image: docker-registry:5000/redisstudy-redisstudy:1.1.7-SNAPSHOT
         imagePullPolicy: Always
         ports:
         - name: http
