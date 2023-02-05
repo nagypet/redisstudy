@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - webservice.redisstudy.k8s-test.perit.hu
+        - webservice.redisstudy.k8s-test.perit.local
       secretName: templatekey
   rules:
-  - host: webservice.redisstudy.k8s-test.perit.hu
+  - host: webservice.redisstudy.k8s-test.perit.local
     http:
       paths:
       - path: /

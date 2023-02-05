@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: pgadmin.redisstudy.k8s-test.perit.hu
+  - host: pgadmin.redisstudy.k8s-test.perit.local
     http:
       paths:
       - path: /
